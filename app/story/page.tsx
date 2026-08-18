@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import { BrandFooter } from "@/components/BrandFooter";
+import { MediaGallery } from "@/components/MediaGallery";
 import { ImageZoom } from "@/components/ImageZoom";
 import { MotionLayer } from "@/components/MotionLayer";
 import { SiteHeader } from "@/components/SiteHeader";
+import { galleries } from "@/lib/media-data";
 import { guardianUrl, instagramHydrationStyle, instagramUrl } from "@/lib/brand-data";
 
 export const metadata: Metadata = {
@@ -62,6 +64,16 @@ export default function StoryPage() {
           <a href={instagramUrl} target="_blank" rel="noreferrer" suppressHydrationWarning style={instagramHydrationStyle}>Official 5AM Instagram archive <ArrowUpRight aria-hidden="true" size={17} /></a>
         </div>
       </section>
+
+      <section className="v5-pagegallery v5-section" aria-labelledby="story-gallery-title">
+        <div className="v5-pagegallery__head">
+          <div className="v5-section-label"><span>&#9679;</span> The people</div>
+          <h2 id="story-gallery-title">Who is actually in the room.</h2>
+          <p>Staff mid-shift, customers mid-sentence, and the small details that make a place feel like somewhere.</p>
+        </div>
+        <MediaGallery shots={galleries.story} layout="mosaic" eagerCount={2} />
+      </section>
+
       <BrandFooter />
     </main>
   );

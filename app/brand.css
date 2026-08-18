@@ -2105,6 +2105,277 @@ a:focus-visible > .v5-media-destination,
 }
 
 /* ==========================================================================
+   Gallery — mosaic
+   ==========================================================================
+   The archive is ~85% 3:4 portrait. An even grid would either square-crop every
+   frame (discarding the top and bottom of each) or leave ragged gaps, so this is
+   a dense grid where a few frames span two columns and/or two rows. That
+   variation is what turns a hundred portraits into a composition rather than a
+   contact sheet.
+
+   `grid-auto-flow: dense` lets small tiles backfill the holes a span leaves
+   behind, keeping the mosaic tight without hand-placing anything.
+   ========================================================================== */
+
+.v5-gallery {
+  display: grid;
+  grid-auto-flow: dense;
+  gap: clamp(8px, 1.2vw, 16px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.v5-gallery__cell figure {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  height: 100%;
+}
+
+.v5-gallery__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(21, 13, 9, 0.06);
+}
+
+.v5-gallery__frame img {
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.v5-gallery__cell--wide { grid-column: span 2; }
+.v5-gallery__cell--wide .v5-gallery__frame { aspect-ratio: 4 / 3; }
+
+.v5-gallery__cell--feature { grid-column: span 2; }
+.v5-gallery__cell--feature .v5-gallery__frame { aspect-ratio: 1 / 1; }
+
+.v5-gallery__cell figcaption {
+  font-family: var(--v5-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  /* 0.72 alpha on this cream measures ~6:1, clear of the 4.5 floor. */
+  color: rgba(21, 13, 9, 0.72);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .v5-gallery__cell:hover .v5-gallery__frame img { transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5-gallery__frame img { transition: none; }
+}
+
+@media (min-width: 700px) {
+  .v5-gallery--mosaic { grid-template-columns: repeat(4, 1fr); }
+  .v5-gallery--grid { grid-template-columns: repeat(3, 1fr); }
+  .v5-gallery__cell--feature { grid-row: span 2; }
+  .v5-gallery__cell--feature .v5-gallery__frame { aspect-ratio: 3 / 4; }
+}
+
+@media (min-width: 1180px) {
+  .v5-gallery--mosaic { grid-template-columns: repeat(5, 1fr); }
+  .v5-gallery--grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ==========================================================================
+   Autoplay clips
+   ==========================================================================
+   Silent, looping, played only while on screen. components/AutoVideo.tsx has
+   the reasoning for why muted + playsInline + IntersectionObserver are all
+   required rather than optional.
+   ========================================================================== */
+
+.v5-autovideo {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.v5-autovideo__el {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 2px;
+  background: rgba(21, 13, 9, 0.08);
+}
+
+.v5-autovideo--cover,
+.v5-autovideo--cover .v5-autovideo__el {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.v5-autovideo figcaption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--v5-body);
+  font-size: 0.8rem;
+  color: rgba(21, 13, 9, 0.72);
+}
+
+/* A quiet "this is moving" marker, so a looping clip is distinguishable from a
+   still at a glance. */
+.v5-autovideo__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d4471f;
+  animation: v5-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes v5-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5-autovideo__dot { animation: none; }
+}
+
+/* ==========================================================================
+   Gallery page
+   ========================================================================== */
+
+.v5-galleryhead {
+  padding: clamp(96px, 14vw, 180px) max(20px, 4.5vw) clamp(24px, 4vw, 48px);
+  background: var(--v5-cream);
+}
+
+.v5-galleryhead h1 {
+  margin: 0;
+  font-family: var(--v5-display);
+  font-size: clamp(2.8rem, 12vw, 8rem);
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+}
+
+.v5-galleryhead p {
+  max-width: 56ch;
+  margin: 16px 0 0;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.55;
+  color: rgba(21, 13, 9, 0.74);
+}
+
+/* Sticky in-page nav of plain anchors rather than a JS filter: with a hundred
+   images the browser's own jump is faster and more reliable than any state I
+   would write, and it works before hydration. */
+.v5-gallerynav {
+  position: sticky;
+  top: 58px;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px max(20px, 4.5vw);
+  background: var(--v5-cream);
+  border-block: 1px solid var(--v5-line);
+  scrollbar-width: none;
+}
+
+.v5-gallerynav::-webkit-scrollbar { display: none; }
+
+.v5-gallerynav a {
+  flex: 0 0 auto;
+  padding: 9px 15px;
+  border: 1px solid var(--v5-line);
+  border-radius: 999px;
+  font-family: var(--v5-body);
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--v5-ink);
+  /* 44px keeps these reachable with a thumb. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.v5-gallerynav a:hover,
+.v5-gallerynav a:focus-visible {
+  background: var(--v5-ink);
+  color: var(--v5-cream);
+}
+
+.v5-gallerysection {
+  padding: clamp(40px, 7vw, 84px) max(20px, 4.5vw);
+  scroll-margin-top: 124px;
+}
+
+/* Per-page gallery block. Shares the mosaic; only the heading treatment differs
+   from the archive page, which has its own header and sticky nav. */
+.v5-pagegallery {
+  background: var(--v5-cream);
+  color: var(--v5-ink);
+}
+
+.v5-pagegallery__head {
+  margin-bottom: clamp(20px, 3vw, 36px);
+}
+
+.v5-pagegallery__head h2 {
+  margin: 10px 0 0;
+  font-family: var(--v5-display);
+  font-size: clamp(2.3rem, 8vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+.v5-pagegallery__head p {
+  max-width: 56ch;
+  margin: 12px 0 0;
+  font-size: clamp(0.98rem, 1.3vw, 1.1rem);
+  line-height: 1.55;
+  color: rgba(21, 13, 9, 0.74);
+}
+
+/* Clips sit between groups so motion arrives as a change of pace rather than a
+   wall of video. Two side by side on a wide screen, stacked on a phone. */
+.v5-gallery__clipband {
+  display: grid;
+  gap: clamp(10px, 1.5vw, 18px);
+  margin-top: clamp(18px, 3vw, 32px);
+}
+
+@media (min-width: 760px) {
+  .v5-gallery__clipband { grid-template-columns: repeat(2, 1fr); }
+}
+
+.v5-gallerysection__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(16px, 2.5vw, 28px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--v5-line);
+}
+
+.v5-gallerysection__head h2 {
+  margin: 0;
+  font-family: var(--v5-display);
+  font-size: clamp(1.9rem, 5vw, 3.2rem);
+  line-height: 1;
+}
+
+.v5-gallerysection__head span {
+  font-family: var(--v5-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(21, 13, 9, 0.62);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
    Mobile pass
    ==========================================================================
    Measured on a 390x844 viewport: headings rendered at 62-66px because their

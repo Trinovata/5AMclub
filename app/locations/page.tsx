@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { BrandFooter } from "@/components/BrandFooter";
+import { MediaGallery } from "@/components/MediaGallery";
 import { LocationExplorer } from "@/components/LocationExplorer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { SiteHeader } from "@/components/SiteHeader";
+import { galleries } from "@/lib/media-data";
 
 export const metadata: Metadata = {
   title: "Locations",
@@ -30,6 +32,16 @@ export default function LocationsPage() {
         </a>
       </section>
       <LocationExplorer />
+
+      <section className="v5-pagegallery v5-section" aria-labelledby="locations-gallery-title">
+        <div className="v5-pagegallery__head">
+          <div className="v5-section-label"><span>&#9679;</span> Both rooms</div>
+          <h2 id="locations-gallery-title">The spaces, and the cart.</h2>
+          <p>Carlos Street, Cunupia, and the cart when it travels. Interiors, corners, and the light at different hours.</p>
+        </div>
+        <MediaGallery shots={galleries.locations} layout="mosaic" eagerCount={2} />
+      </section>
+
       <BrandFooter />
     </main>
   );

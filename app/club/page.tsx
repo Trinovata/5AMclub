@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BrandFooter } from "@/components/BrandFooter";
+import { MediaGallery } from "@/components/MediaGallery";
 import { ClubGallery } from "@/components/ClubGallery";
 import { MotionLayer } from "@/components/MotionLayer";
 import { SiteHeader } from "@/components/SiteHeader";
+import { galleries } from "@/lib/media-data";
 import { instagramHydrationStyle, instagramUrl } from "@/lib/brand-data";
 
 export const metadata: Metadata = {
@@ -51,6 +53,16 @@ export default function ClubPage() {
         <div><span>Next up?</span><h2>The official feed knows first.</h2></div>
         <a href={instagramUrl} target="_blank" rel="noreferrer" suppressHydrationWarning style={instagramHydrationStyle}>Follow @5amclubcoffee <ArrowUpRight aria-hidden="true" /></a>
       </section>
+
+      <section className="v5-pagegallery v5-section" aria-labelledby="club-gallery-title">
+        <div className="v5-pagegallery__head">
+          <div className="v5-section-label"><span>&#9679;</span> The archive</div>
+          <h2 id="club-gallery-title">Nights that happened.</h2>
+          <p>Jazz, game nights, pop-ups and night markets — the crowd, not the poster.</p>
+        </div>
+        <MediaGallery shots={galleries.club} layout="mosaic" eagerCount={2} />
+      </section>
+
       <BrandFooter />
     </main>
   );
