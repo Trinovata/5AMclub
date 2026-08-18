@@ -2855,8 +2855,17 @@ a:focus-visible > .v5-media-destination,
 
 /* The reveal: hero type rises as the page settles. CSS rather than the GSAP
    layer so it runs on the first paint, before hydration — a hero that animates
-   in only once JS lands reads as a page that stuttered. */
-.v5-pagehero [data-v5-reveal] {
+   in only once JS lands reads as a page that stuttered.
+
+   Targets the elements directly rather than [data-v5-reveal]. Those attributes
+   were removed from the hero: GSAP also claims them, and it had set an inline
+   `opacity: 0` on the title that never cleared, because its scroll trigger never
+   fired for an element sitting below the fold. Two systems animating one element
+   is one too many. */
+.v5-pagehero__eyebrow,
+.v5-pagehero__script,
+.v5-pagehero h1,
+.v5-pagehero__lede {
   animation: v5-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -2884,14 +2893,37 @@ a:focus-visible > .v5-media-destination,
     background: var(--v5-ink);
   }
 
+  /* grid-row: 1 on BOTH is load-bearing. The media div comes first in source and
+     is placed at column 2, which moves the auto-placement cursor past row 1 — so
+     the copy, asking only for column 1, was pushed to ROW 2 and rendered below
+     the photograph, off the bottom of the screen. Naming the row for both puts
+     them side by side, which was the entire point of the split. */
+  /* THE SPLIT CHANGES WHAT vw MEANS.
+     The base title is clamp(2.6rem, 10vw, 8.5rem) — correct full-bleed on a
+     phone, where the column IS the viewport. Here the copy sits in a third of
+     the screen, so 10vw resolved to 136px inside a 480px column and broke
+     "Everything," across two lines mid-word. Type in a split layout has to be
+     sized against its COLUMN, not the window. */
+  .v5-pagehero h1 {
+    font-size: clamp(2.8rem, 4.2vw, 5.2rem);
+    line-height: 0.92;
+  }
+
   .v5-pagehero__copy {
-    max-width: 30ch;
     grid-column: 1;
+    grid-row: 1;
+    /* An absolute measure, not ch. `ch` resolves against the CONTAINER's font —
+       the body face at 16px — so 34ch gave 275px and 15ch gave 138px, both far
+       too narrow for the display title they were meant to size. 30rem is
+       predictable regardless of which font the container happens to inherit. */
+    width: auto;
+    max-width: min(34rem, 100%);
   }
 
   .v5-pagehero__media {
     position: relative;
     grid-column: 2;
+    grid-row: 1;
     /* The photograph's own shape. cover now trims a few percent instead of
        discarding three quarters of the frame. */
     aspect-ratio: 3 / 4;

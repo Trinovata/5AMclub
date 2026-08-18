@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type Mode = "coffee" | "breakfast" | "club";
@@ -60,7 +60,6 @@ const modes: Array<{
 export function HeroStage() {
   const [mode, setMode] = useState<Mode>("coffee");
   const [reduceMotion, setReduceMotion] = useState(true);
-  const [playing, setPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const active = modes.find((item) => item.id === mode) ?? modes[0];
 
@@ -72,25 +71,18 @@ export function HeroStage() {
     return () => query.removeEventListener("change", update);
   }, []);
 
+  // No playing state and no toggle: with the transport button gone, nothing
+  // reads whether it is playing, and a rejected play() should leave the poster
+  // up rather than drive a control that no longer exists.
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || reduceMotion) {
-      setPlaying(false);
+    if (!video) return;
+    if (reduceMotion) {
+      video.pause();
       return;
     }
-    void video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    void video.play().catch(() => {});
   }, [mode, reduceMotion]);
-
-  function togglePlayback() {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      void video.play().then(() => setPlaying(true));
-    } else {
-      video.pause();
-      setPlaying(false);
-    }
-  }
 
   return (
     <div className={`v5-hero-stage v5-hero-stage--${mode}`} data-v5-hero>
@@ -121,14 +113,14 @@ export function HeroStage() {
       </div>
       <div className="v5-hero-stage__shade" />
 
+      {/* No play/pause control. The background film is decorative, silent and
+          looping — the same class of thing as the clips elsewhere on the site,
+          none of which offer controls. A transport button on ambient footage
+          invites a decision nobody came here to make, and it was the only chrome
+          floating over the hero. Motion-sensitive visitors are served by
+          prefers-reduced-motion, which stops it without a button. */}
       <div className="v5-hero-stage__top">
         <span>{active.kicker}</span>
-        {active.video && (
-          <button type="button" onClick={togglePlayback} aria-label={playing ? "Pause background film" : "Play background film"}>
-            {playing ? <Pause aria-hidden="true" size={16} /> : <Play aria-hidden="true" size={16} />}
-            {playing ? "Pause" : "Play"}
-          </button>
-        )}
       </div>
 
       <div className="v5-hero-stage__copy" key={`copy-${active.id}`} aria-live="polite">

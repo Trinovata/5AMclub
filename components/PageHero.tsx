@@ -57,17 +57,17 @@ export function PageHero({
       <div className="v5-pagehero__scrim" aria-hidden="true" />
 
       <div className="v5-pagehero__copy">
-        <p className="v5-pagehero__eyebrow" data-v5-reveal>
+        <p className="v5-pagehero__eyebrow">
           {eyebrow}
         </p>
         {script ? (
-          <p className="v5-script v5-pagehero__script" data-v5-reveal>
+          <p className="v5-script v5-pagehero__script">
             {script}
           </p>
         ) : null}
-        <h1 data-v5-reveal>{title}</h1>
+        <h1>{title}</h1>
         {lede ? (
-          <p className="v5-pagehero__lede" data-v5-reveal>
+          <p className="v5-pagehero__lede">
             {lede}
           </p>
         ) : null}
