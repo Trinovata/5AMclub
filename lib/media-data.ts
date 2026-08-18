@@ -169,7 +169,13 @@ export const galleries: Record<string, GalleryShot[]> = {
   { image: "/media/archive/barista-fresh-pour.jpg", imageAlt: "A smiling barista holds up a branded coffee cup in front of the espresso machine and shelves.", caption: "barista, fresh pour", span: "feature" },
   { image: "/media/archive/mother-daughter-christmas.jpg", imageAlt: "A mother and young daughter in matching Christmas-themed pajamas pose together indoors near a decorated tree.", caption: "mother, daughter, christmas" },
   { image: "/media/archive/mother-son-snowman-sweaters.jpg", imageAlt: "A mother and son wearing matching blue snowman-print sweaters with red sleeves pose together in front of a Christmas tree.", caption: "mother, son, snowman sweaters", span: "wide" },
-  { image: "/media/archive/the-boy-who-started-it.jpg", imageAlt: "A faded childhood photo of a smiling boy, overlaid with text about him growing up to open the coffee shop.", caption: "the boy who started it" },
+  // REMOVED: "the boy who started it" — the founder's childhood photo. It comes
+  // from a 19-frame post built out of staff members' personal childhood
+  // pictures, which the curation pass flagged as off-limits (it includes other
+  // people's children, one a toddler in a swimsuit). This frame is the
+  // defensible one — it is the founder's own origin post, self-published with
+  // brand text — but a photograph of a child on a client site is not a call to
+  // make on the client's behalf. Restore this line if Kyle confirms he wants it.
   { image: "/media/archive/counter-conversation.jpg", imageAlt: "A young man in a cap leans on the counter, smiling, with a street scene blurred behind him.", caption: "counter conversation" },
   { image: "/media/archive/the-staff-arm-in-arm.jpg", imageAlt: "Four staff members in maroon 5AM Club shirts pose together with arms around each other.", caption: "the staff, arm in arm" },
   { image: "/media/archive/shirt-reveal-storefront-view.jpg", imageAlt: "A staff member holds open her maroon 5AM Club shirt with the storefront sign visible through the window behind her.", caption: "shirt reveal, storefront view" },
