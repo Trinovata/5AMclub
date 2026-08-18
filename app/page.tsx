@@ -4,8 +4,10 @@ import { ArrowRight, ArrowUpRight, MapPin, MoveRight } from "lucide-react";
 import { BrandFooter } from "@/components/BrandFooter";
 import { BrandSystemMap } from "@/components/BrandSystemMap";
 import { HeroStage } from "@/components/HeroStage";
+import { AutoVideo } from "@/components/AutoVideo";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PhotoStrip } from "@/components/PhotoStrip";
+import { clips } from "@/lib/media-data";
 import { SiteHeader } from "@/components/SiteHeader";
 import { guardianUrl, locations, menuItems } from "@/lib/brand-data";
 
@@ -54,6 +56,26 @@ export default function Home() {
           <p className="v5-script">Come for coffee. Stay for something else.</p>
         </Link>
       </section>
+
+      {/* Motion immediately under the fold-line: three clips that are already
+          running when the page paints, so the first scroll lands on movement
+          rather than another still. `eager` on the first two only — the third
+          is usually just off screen on a phone and starts when it arrives. */}
+      {clips.length >= 3 ? (
+        <section className="v5-motionband" aria-label="5AM Club in motion">
+          {clips.slice(0, 3).map((clip, index) => (
+            <AutoVideo
+              key={clip.src}
+              src={clip.src}
+              poster={clip.poster}
+              label={clip.label}
+              caption={clip.caption}
+              eager={index < 2}
+              cover
+            />
+          ))}
+        </section>
+      ) : null}
 
       <div className="v5-newsrail" aria-label="Latest 5AM updates">
         <span>Now at 5AM</span>

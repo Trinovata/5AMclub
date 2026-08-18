@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { BrandFooter } from "@/components/BrandFooter";
+import { MediaGallery } from "@/components/MediaGallery";
 import { MenuExplorer } from "@/components/MenuExplorer";
 import { MotionLayer } from "@/components/MotionLayer";
+import { PageHero } from "@/components/PageHero";
 import { SiteHeader } from "@/components/SiteHeader";
+import { galleries } from "@/lib/media-data";
 
 export const metadata: Metadata = {
   title: "Menu",
@@ -17,7 +20,18 @@ export default function MenuPage() {
       <a className="skip-link" href="#main-content">Skip to content</a>
       <MotionLayer />
       <SiteHeader />
-      <section className="v5-menu-hero" id="main-content">
+
+      <PageHero
+        eyebrow="The menu"
+        script="Made in front of you"
+        title="Everything, with receipts."
+        lede="Breakfast, the summer line, and the drinks people actually order. Every item here is sourced from the shop's own posts."
+        image="/media/archive/the-pour-night-shift.jpg"
+        imageAlt="A barista pours milk into a coffee during a night shift."
+        weight="light"
+        clip={{ src: "/media/clips/oat-milk-pour-cookie.mp4", poster: "/media/clips/oat-milk-pour-cookie.poster.jpg", label: "A barista pours milk into a coffee during a night shift." }}
+      />
+      <section className="v5-menu-hero">
         <div className="v5-menu-hero__copy" data-v5-hero>
           <div className="v5-page-index"><span>01</span> The menu</div>
           <p className="v5-script">Real food. Real posts.</p>
@@ -47,6 +61,16 @@ export default function MenuPage() {
         <strong>A deliberate constraint</strong>
         <p>This concept only publishes names, descriptions, service windows, and images visible in the supplied public archive. A production launch should connect the menu to staff-owned live records.</p>
       </section>
+
+      <section className="v5-pagegallery v5-section" aria-labelledby="menu-gallery-title">
+        <div className="v5-pagegallery__head">
+          <div className="v5-section-label"><span>&#9679;</span> Everything on the pass</div>
+          <h2 id="menu-gallery-title">The plates, as served.</h2>
+          <p>Photographs of what actually comes out of the kitchen and off the bar. No styling, no stand-ins.</p>
+        </div>
+        <MediaGallery shots={galleries.menu} layout="mosaic" eagerCount={2} />
+      </section>
+
       <BrandFooter />
     </main>
   );

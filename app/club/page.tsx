@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BrandFooter } from "@/components/BrandFooter";
+import { MediaGallery } from "@/components/MediaGallery";
 import { ClubGallery } from "@/components/ClubGallery";
 import { MotionLayer } from "@/components/MotionLayer";
+import { PageHero } from "@/components/PageHero";
 import { SiteHeader } from "@/components/SiteHeader";
+import { galleries } from "@/lib/media-data";
 import { instagramHydrationStyle, instagramUrl } from "@/lib/brand-data";
 
 export const metadata: Metadata = {
@@ -19,7 +22,18 @@ export default function ClubPage() {
       <a className="skip-link" href="#main-content">Skip to content</a>
       <MotionLayer />
       <SiteHeader />
-      <section className="v5-club-hero" id="main-content">
+
+      <PageHero
+        eyebrow="The Club"
+        script="After the coffee"
+        title="Nights that actually happened."
+        lede="Jazz, game nights, pop-ups and night markets — an archive of the room when the lights go down."
+        image="/media/real/night-market-crowd-dancing.jpg"
+        imageAlt="A crowd at a night market with hands raised under warm string lights."
+        weight="light"
+        clip={{ src: "/media/clips/carnival-crowd-streamers-up.mp4", poster: "/media/clips/carnival-crowd-streamers-up.poster.jpg", label: "A crowd at a night market with hands raised under warm string lights." }}
+      />
+      <section className="v5-club-hero">
         <div className="v5-club-hero__film" data-v5-hero>
           <video controls muted playsInline preload="metadata" poster="/media/real/film-jazz-night.poster.jpg">
             <source src="/media/real/film-jazz-night.mp4" type="video/mp4" />
@@ -51,6 +65,16 @@ export default function ClubPage() {
         <div><span>Next up?</span><h2>The official feed knows first.</h2></div>
         <a href={instagramUrl} target="_blank" rel="noreferrer" suppressHydrationWarning style={instagramHydrationStyle}>Follow @5amclubcoffee <ArrowUpRight aria-hidden="true" /></a>
       </section>
+
+      <section className="v5-pagegallery v5-section" aria-labelledby="club-gallery-title">
+        <div className="v5-pagegallery__head">
+          <div className="v5-section-label"><span>&#9679;</span> The archive</div>
+          <h2 id="club-gallery-title">Nights that happened.</h2>
+          <p>Jazz, game nights, pop-ups and night markets — the crowd, not the poster.</p>
+        </div>
+        <MediaGallery shots={galleries.club} layout="mosaic" eagerCount={2} />
+      </section>
+
       <BrandFooter />
     </main>
   );

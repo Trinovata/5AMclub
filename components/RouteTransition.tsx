@@ -31,9 +31,12 @@ export function RouteTransition() {
   useEffect(() => {
     document.documentElement.classList.remove("v5-is-leaving");
     document.documentElement.classList.add("v5-is-entering");
+    // Must outlast the exit animation (720ms + 120ms delay) and the page-enter
+    // (640ms + 180ms). Removing the class early cancels both mid-flight, which
+    // is its own source of jank.
     const timer = window.setTimeout(() => {
       document.documentElement.classList.remove("v5-is-entering");
-    }, 560);
+    }, 900);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 
@@ -66,9 +69,13 @@ export function RouteTransition() {
 
       document.documentElement.classList.add("v5-is-leaving");
       if (timerRef.current) window.clearTimeout(timerRef.current);
+      // 620ms: the curtain's rise is 560ms, plus a 60ms beat at full cover so
+      // the swap happens behind a screen that has actually stopped moving.
+      // This was 260ms against a 420ms rise, so the route changed mid-travel and
+      // the whole thing read as a cut.
       timerRef.current = window.setTimeout(() => {
         router.push(`${next.pathname}${next.search}${next.hash}`);
-      }, 260);
+      }, 620);
     }
 
     document.addEventListener("click", onClick, true);
@@ -82,7 +89,10 @@ export function RouteTransition() {
     <>
       <div className="v5-scroll-progress" aria-hidden="true" />
       <div className="v5-route-curtain" aria-hidden="true">
-        <Image src="/brand/5am-logo-white-on-black.png" alt="" width={82} height={82} />
+        {/* Alpha PNG, not the white-on-black asset. The old one was a black
+            square forced into a circle with border-radius, which read as a hard
+            disc sitting on the curtain rather than a mark printed on it. */}
+        <Image src="/brand/5am-logo-alpha.png" alt="" width={96} height={96} />
         <span>Going to</span>
         <strong>{label}</strong>
       </div>

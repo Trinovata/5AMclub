@@ -1,5 +1,31 @@
 import Image from "next/image";
+import Link from "next/link";
 import { roomShots } from "@/lib/brand-data";
+import { stripShots } from "@/lib/media-data";
+
+/**
+ * The hand-verified frames lead, then the curated archive continues the rail.
+ * Order matters: the opening three are the ones checked frame by frame, so the
+ * first thing a thumb sees is the strongest material rather than whatever the
+ * category interleave happened to put first.
+ */
+const shots: { image: string; imageAlt: string; caption?: string; feature: boolean }[] = [
+  // The hand-checked set carries an explicit `feature` flag; the generated set
+  // carries a mosaic `span`. Both mean "give this one more room", so they are
+  // flattened to one shape here rather than leaking two vocabularies into JSX.
+  ...roomShots.map((s) => ({
+    image: s.image,
+    imageAlt: s.imageAlt,
+    caption: s.caption,
+    feature: Boolean(s.feature),
+  })),
+  ...stripShots.map((s) => ({
+    image: s.image,
+    imageAlt: s.imageAlt,
+    caption: s.caption,
+    feature: s.span === "feature",
+  })),
+];
 
 /**
  * "In the room" — a swipeable photo strip.
@@ -31,8 +57,12 @@ export function PhotoStrip() {
           <p className="v5-script">Photographs, not renders</p>
           <h2 id="strip-title">The room, mid&#8209;service.</h2>
           <p className="v5-strip__lede">
-            Fifteen frames from the public archive — the cart, the queue, the pour, and the
-            people who turned up for it. Swipe through.
+            {shots.length} frames from the public archive — the cart, the queue, the pour, and
+            the people who turned up for it. Swipe through, or{" "}
+            <Link className="v5-text-link" href="/gallery">
+              open the full archive
+            </Link>
+            .
           </p>
         </div>
       </div>
@@ -43,7 +73,7 @@ export function PhotoStrip() {
         role="group"
         aria-label="Photographs of 5AM Club Coffee — scroll sideways to see more"
       >
-        {roomShots.map((shot, index) => (
+        {shots.map((shot, index) => (
           <li
             key={shot.image}
             className={`v5-strip__item${shot.feature ? " v5-strip__item--feature" : ""}`}
