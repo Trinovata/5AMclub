@@ -213,6 +213,108 @@ export const archiveMoments = [
   },
 ] as const;
 
+export type RoomShot = {
+  image: string;
+  imageAlt: string;
+  caption: string;
+  /** Portrait frames crop badly in a wide banner; the strip keeps them 3:4. */
+  feature?: boolean;
+};
+
+/**
+ * "In the room" — the swipeable photo strip.
+ *
+ * Every frame is a real photograph from the public @5amclubcoffee archive,
+ * selected by visual review rather than by recency or file size. Deliberately
+ * excluded: the December staff shoot (licensed character art in frame), the
+ * hiring graphics (they carry a contact address), and plates served on
+ * third-party branded newsprint.
+ *
+ * Captions describe only what is visible. No price, hour, or claim is asserted
+ * here — those live in the sourced menu and location records.
+ */
+export const roomShots: RoomShot[] = [
+  {
+    image: "/media/real/night-market-crowd-dancing.jpg",
+    imageAlt: "A dancer at a night market balances a 5AM Club cup on her head, hands raised, under warm string lights",
+    caption: "Night market, hands up",
+    feature: true,
+  },
+  {
+    image: "/media/real/cart-front-staff-queue.jpg",
+    imageAlt: "The 5AM Club cart seen from the front, logo panel lit, three staff pouring behind it while customers wait",
+    caption: "The cart, from the queue",
+    feature: true,
+  },
+  {
+    image: "/media/real/baristas-loft-interior.jpg",
+    imageAlt: "Two baristas stand back to back and smiling inside the loft, spiral staircase and plants behind them",
+    caption: "Upstairs, mid-shift",
+    feature: true,
+  },
+  {
+    image: "/media/real/customers-matcha-event.jpg",
+    imageAlt: "Two customers smile to camera at an outdoor event, each holding a branded 5AM matcha",
+    caption: "Two matchas, one afternoon",
+  },
+  {
+    image: "/media/real/syrup-pour-chicken-waffles.jpg",
+    imageAlt: "Syrup pours mid-air onto strawberry waffles and chicken tenders, café window and rattan chairs behind",
+    caption: "The pour",
+    feature: true,
+  },
+  {
+    image: "/media/real/matcha-in-hand-golden-hour.jpg",
+    imageAlt: "A customer films on her phone while holding a branded matcha in golden-hour light",
+    caption: "Golden hour, filmed",
+  },
+  {
+    image: "/media/real/staff-portrait-golden.jpg",
+    imageAlt: "A 5AM staff member waves a gloved hand, a flower in her hair, lit by warm evening light",
+    caption: "A wave from the counter",
+  },
+  {
+    image: "/media/real/matcha-chalkboard-cart.jpg",
+    imageAlt: "A lantern-lit cart counter with a chalkboard matcha menu, syrup pumps and glass carafes",
+    caption: "Chalk and lantern light",
+  },
+  {
+    image: "/media/real/iced-coffee-brownie-to-go.jpg",
+    imageAlt: "A hand holds a branded 5AM iced coffee and a brownie in a kraft carrier on a sunlit street",
+    caption: "Taken to go",
+  },
+  {
+    image: "/media/real/latte-art-breakfast-table.jpg",
+    imageAlt: "A rosetta latte in a terracotta cup with waffles and chicken softly out of focus behind",
+    caption: "Rosetta, then breakfast",
+  },
+  {
+    image: "/media/real/iced-latte-tropical-foliage.jpg",
+    imageAlt: "An iced latte in a branded glass can beside a shortbread biscuit against tropical ferns",
+    caption: "Glass, ferns, ice",
+  },
+  {
+    image: "/media/real/buffalo-chicken-toastie.jpg",
+    imageAlt: "A close view of a grilled buffalo chicken toastie with glossy sauce, held in a gloved hand",
+    caption: "Buffalo, grilled",
+  },
+  {
+    image: "/media/real/club-sandwich-closeup.jpg",
+    imageAlt: "A close view of a club sandwich on ciabatta with turkey, lettuce, tomato and pickle",
+    caption: "Ciabatta, stacked",
+  },
+  {
+    image: "/media/real/cinnamon-roll-cream-cheese.jpg",
+    imageAlt: "A cinnamon roll with cream cheese frosting on a dark green plate, pastries blurred in front",
+    caption: "Cinnamon, iced",
+  },
+  {
+    image: "/media/real/pancakes-eggs-window-light.jpg",
+    imageAlt: "Pancakes with berry compote and two fried eggs beside a syrup cup in window light",
+    caption: "Pancakes, window seat",
+  },
+];
+
 export const instagramUrl = "https://www.instagram.com/5amclubcoffee/";
 // The connected preview browser applies this accessibility annotation before React hydrates.
 // Keeping it in the rendered markup avoids a dev-only hydration overlay; brand CSS controls the visual color.

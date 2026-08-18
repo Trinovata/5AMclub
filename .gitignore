@@ -22,3 +22,7 @@ next-env.d.ts
 .DS_Store
 *.pem
 tsconfig.tsbuildinfo
+.gstack/
+.shots/
+.dev4400.log
+.dev4400.err.log
