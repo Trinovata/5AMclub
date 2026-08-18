@@ -113,9 +113,28 @@
   border-radius: 50%;
 }
 
-.v5-route-curtain::before { top: -26vw; left: -14vw; }
-.v5-route-curtain::after { right: -14vw; bottom: -26vw; }
-.v5-route-curtain img { width: 82px; height: 82px; border-radius: 50%; }
+/* These were two bare outlined circles bleeding off opposite corners. At phone
+   width the bottom-left one clipped into the viewport as a stray arc with no
+   relationship to anything — a shape, not a brand element.
+   Replaced with the 5AM mark as a low-opacity alpha PNG: same "faint overlay"
+   role, but it now says something. One only, bottom-left, where the stray arc
+   used to be. */
+.v5-route-curtain::before {
+  top: auto;
+  bottom: -6vw;
+  left: -8vw;
+  width: min(52vw, 420px);
+  border: 0;
+  border-radius: 0;
+  background: url("/brand/5am-logo-alpha.png") center / contain no-repeat;
+  opacity: 0.12;
+}
+
+.v5-route-curtain::after { content: none; }
+/* No border-radius: the mark is now a transparent PNG, so cutting it into a
+   circle would clip the logo instead of shaping a background that no longer
+   exists. Held back to a watermark weight so it sits IN the curtain. */
+.v5-route-curtain img { width: 96px; height: 96px; opacity: 0.42; }
 .v5-route-curtain > span { margin-top: 20px; font-family: "Archivo Variable", sans-serif; font-size: .56rem; font-weight: 780; letter-spacing: .15em; text-transform: uppercase; }
 .v5-route-curtain > strong { margin-top: 5px; font-family: "Bodoni Moda Variable", serif; font-size: clamp(3.2rem, 8vw, 8rem); font-weight: 540; line-height: .9; letter-spacing: -.055em; }
 html.v5-is-leaving .v5-route-curtain { pointer-events: auto; transform: translateY(0); }
@@ -2120,11 +2139,14 @@ a:focus-visible > .v5-media-destination,
 .v5-gallery {
   display: grid;
   grid-auto-flow: dense;
-  gap: clamp(8px, 1.2vw, 16px);
+  gap: clamp(6px, 1.2vw, 16px);
   margin: 0;
   padding: 0;
   list-style: none;
-  grid-template-columns: repeat(2, 1fr);
+  /* THREE across on a phone, not two. Small tiles are for browsing — a scroll
+     shows a dozen photographs instead of four — and the expand button is for
+     looking. Dense to scan, full screen to see. */
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .v5-gallery__cell figure {
@@ -2137,15 +2159,125 @@ a:focus-visible > .v5-media-destination,
 .v5-gallery__frame {
   position: relative;
   display: block;
+  width: 100%;
   aspect-ratio: 3 / 4;
   overflow: hidden;
   border-radius: 2px;
   background: rgba(21, 13, 9, 0.06);
+  /* It is a button now, so the button chrome has to go. */
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.v5-gallery__frame:focus-visible {
+  outline: 2px solid var(--v5-ink);
+  outline-offset: 3px;
 }
 
 .v5-gallery__frame img {
   object-fit: cover;
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The expand affordance. Always visible on touch — where there is no hover to
+   discover it with — and revealed on hover for pointers. */
+.v5-gallery__expand {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(10, 6, 4, 0.62);
+  color: #fff;
+  backdrop-filter: blur(3px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .v5-gallery__expand { opacity: 0; transform: scale(0.85); }
+  .v5-gallery__cell:hover .v5-gallery__expand,
+  .v5-gallery__frame:focus-visible .v5-gallery__expand { opacity: 1; transform: none; }
+}
+
+/* ---- the viewer ---------------------------------------------------------- */
+
+.v5-viewer {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100svh;
+  max-height: 100svh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(8, 5, 3, 0.97);
+  color: #fff;
+}
+
+.v5-viewer::backdrop {
+  background: rgba(8, 5, 3, 0.9);
+}
+
+.v5-viewer__inner {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  padding: max(14px, 3vw);
+  gap: 12px;
+}
+
+.v5-viewer__frame {
+  position: relative;
+  min-height: 0;
+}
+
+/* contain, not cover: in a viewer the whole photograph matters, and cropping
+   the thing someone tapped to see in full would be perverse. */
+.v5-viewer__frame img {
+  object-fit: contain;
+}
+
+.v5-viewer__close {
+  position: absolute;
+  top: max(14px, 3vw);
+  right: max(14px, 3vw);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  /* 44px so it is reachable with a thumb. */
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(10, 6, 4, 0.55);
+  color: #fff;
+  cursor: pointer;
+}
+
+.v5-viewer__close:hover,
+.v5-viewer__close:focus-visible {
+  background: #fff;
+  color: #0b0705;
+}
+
+.v5-viewer__caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+  font-family: var(--v5-body);
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.v5-viewer__caption small {
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .v5-gallery__cell--wide { grid-column: span 2; }
@@ -2308,6 +2440,370 @@ a:focus-visible > .v5-media-destination,
 .v5-gallerysection {
   padding: clamp(40px, 7vw, 84px) max(20px, 4.5vw);
   scroll-margin-top: 124px;
+}
+
+/* ==========================================================================
+   The pour — first-visit loading screen
+   ==========================================================================
+   Black field, wordmark knocked out of it, coffee rising inside the letters.
+   The liquid is a real shape moving behind an SVG mask, not a gradient clipped
+   to text — which is why it can rise independently of the letterforms.
+   ========================================================================== */
+
+.v5-pour {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #0b0705;
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Lifts away rather than fading in place: the page is already rendered
+   underneath, so the field should read as a curtain leaving. */
+.v5-pour--leaving {
+  opacity: 0;
+  transform: translateY(-14%);
+  pointer-events: none;
+}
+
+.v5-pour__art {
+  width: min(78vw, 420px);
+  height: auto;
+  overflow: visible;
+}
+
+/* The rise. Starts fully below the letterforms and settles just past their
+   cap height, with a slow ease so it reads as liquid finding its level rather
+   than a bar filling. */
+.v5-pour__liquid {
+  transform: translateY(220px);
+  animation: v5-fill 1.8s cubic-bezier(0.45, 0.05, 0.2, 1) forwards;
+}
+
+@keyframes v5-fill {
+  0% { transform: translateY(220px); }
+  70% { transform: translateY(38px); }
+  85% { transform: translateY(52px); }
+  100% { transform: translateY(44px); }
+}
+
+/* The crema line ripples as it rises — the detail that stops it looking like a
+   rectangle with a straight edge. */
+.v5-pour__crema {
+  animation: v5-ripple 1.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes v5-ripple {
+  0%, 100% { transform: translateX(-8px) scaleY(1); }
+  50% { transform: translateX(8px) scaleY(1.5); }
+}
+
+/* The stream falling into the mark before the liquid appears. */
+.v5-pour__stream {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 34vh;
+  margin-left: -1.5px;
+  background: linear-gradient(to bottom, transparent, #8a4a22 45%, #c98f5e);
+  transform-origin: top center;
+  animation: v5-stream 1.15s cubic-bezier(0.5, 0, 0.4, 1) forwards;
+}
+
+@keyframes v5-stream {
+  0% { transform: scaleY(0); opacity: 0; }
+  22% { opacity: 1; }
+  62% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5-pour { display: none; }
+}
+
+/* ==========================================================================
+   Page hero — full-bleed media with the title set over it
+   ==========================================================================
+   Replaces "a heading on cream" as the opening of every content page. The type
+   sits on a scrim rather than directly on the photograph, so contrast is a
+   property of the scrim and does not change with whatever the image happens to
+   be showing at that moment.
+   ========================================================================== */
+
+/* THE ASPECT-RATIO RULE
+   Every frame in this archive is 3:4 portrait. A full-bleed landscape hero with
+   object-fit: cover shows roughly the middle quarter of such a photograph and
+   scales that sliver up — which reads as "muddy" even when the source is 3024px
+   wide. So:
+     phone   — the hero is TALL (a phone screen is already portrait), so cover
+               crops almost nothing.
+     desktop — the hero SPLITS: the media keeps a portrait column at its own
+               aspect ratio and the type sits beside it. Nothing is stretched to
+               fill a shape the photograph was never in. */
+.v5-pagehero {
+  position: relative;
+  display: grid;
+  align-items: end;
+  /* svh, not vh: 100vh on a phone includes the URL bar, so the hero would be
+     taller than the visible screen and shift as the bar hides. */
+  min-height: min(92svh, 780px);
+  padding: clamp(88px, 16vw, 150px) max(20px, 4.5vw) clamp(38px, 7vw, 78px);
+  overflow: clip;
+  isolation: isolate;
+  background: var(--v5-ink);
+}
+
+.v5-pagehero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.v5-pagehero__media img,
+.v5-pagehero__media video,
+.v5-pagehero__media .v5-autovideo,
+.v5-pagehero__media .v5-autovideo__el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+/* Two stops, not one: a broad wash to hold the frame together and a stronger
+   foot where the words actually sit. */
+.v5-pagehero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(10, 6, 4, 0.9) 0%, rgba(10, 6, 4, 0.55) 34%, rgba(10, 6, 4, 0.12) 68%, rgba(10, 6, 4, 0.35) 100%);
+}
+
+.v5-pagehero--heavy .v5-pagehero__scrim {
+  background: linear-gradient(to top, rgba(10, 6, 4, 0.95) 0%, rgba(10, 6, 4, 0.72) 40%, rgba(10, 6, 4, 0.35) 75%, rgba(10, 6, 4, 0.5) 100%);
+}
+
+.v5-pagehero__copy {
+  position: relative;
+  z-index: 2;
+  /* Was 20ch, which resolved to ~183px on a 390px screen and broke "The café was
+     never the first thing." into six one-word lines. The measure has to be set
+     against the VIEWPORT, not the font size, or a large display face collapses
+     the column to nothing. */
+  width: min(100%, 34ch);
+  color: #fff;
+}
+
+.v5-pagehero__eyebrow {
+  margin: 0 0 10px;
+  font-family: var(--v5-body);
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.v5-pagehero__script {
+  margin: 0 0 -4px;
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
+  color: var(--v5-pink);
+}
+
+.v5-pagehero h1 {
+  margin: 0;
+  font-family: var(--v5-display);
+  /* 13vw put "The café" alone on a line at phone width. 10vw with a 2.6rem
+     floor keeps the display scale without turning every title into a column of
+     single words. */
+  font-size: clamp(2.6rem, 10vw, 8.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+  color: #fff;
+  text-wrap: balance;
+  /* Long words (a URL, a hyphenless compound) should break rather than push the
+     layout sideways. */
+  overflow-wrap: break-word;
+}
+
+.v5-pagehero__lede {
+  max-width: 46ch;
+  margin: 18px 0 0;
+  font-family: var(--v5-body);
+  font-size: clamp(0.98rem, 1.4vw, 1.16rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* A scroll cue that animates only where motion is welcome. */
+.v5-pagehero__cue {
+  position: absolute;
+  z-index: 2;
+  right: max(20px, 4.5vw);
+  bottom: clamp(38px, 7vw, 78px);
+  width: 1px;
+  height: 54px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+
+.v5-pagehero__cue span {
+  position: absolute;
+  inset-inline: 0;
+  height: 18px;
+  background: #fff;
+  animation: v5-cue 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes v5-cue {
+  0% { transform: translateY(-20px); opacity: 0; }
+  35% { opacity: 1; }
+  100% { transform: translateY(54px); opacity: 0; }
+}
+
+/* The reveal: hero type rises as the page settles. CSS rather than the GSAP
+   layer so it runs on the first paint, before hydration — a hero that animates
+   in only once JS lands reads as a page that stuttered. */
+.v5-pagehero [data-v5-reveal] {
+  animation: v5-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.v5-pagehero .v5-pagehero__eyebrow { animation-delay: 0.05s; }
+.v5-pagehero .v5-pagehero__script { animation-delay: 0.14s; }
+.v5-pagehero h1 { animation-delay: 0.22s; }
+.v5-pagehero .v5-pagehero__lede { animation-delay: 0.34s; }
+
+@keyframes v5-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5-pagehero [data-v5-reveal] { animation: none; }
+  .v5-pagehero__cue span { animation: none; opacity: 0.6; }
+}
+
+/* Desktop: split rather than full-bleed, so the portrait keeps its shape. */
+@media (min-width: 860px) {
+  .v5-pagehero {
+    grid-template-columns: 1fr minmax(360px, 42%);
+    align-items: center;
+    gap: clamp(28px, 4vw, 64px);
+    background: var(--v5-ink);
+  }
+
+  .v5-pagehero__copy {
+    max-width: 30ch;
+    grid-column: 1;
+  }
+
+  .v5-pagehero__media {
+    position: relative;
+    grid-column: 2;
+    /* The photograph's own shape. cover now trims a few percent instead of
+       discarding three quarters of the frame. */
+    aspect-ratio: 3 / 4;
+    max-height: 72vh;
+    justify-self: end;
+    align-self: center;
+    width: 100%;
+    inset: auto;
+  }
+
+  /* With the media in its own column the scrim is no longer holding text over a
+     photograph, so it becomes a soft edge instead of a blanket. */
+  .v5-pagehero__scrim {
+    background: linear-gradient(to right, rgba(11, 7, 5, 0.96) 0%, rgba(11, 7, 5, 0.7) 46%, rgba(11, 7, 5, 0) 72%);
+  }
+
+  .v5-pagehero__cue { right: auto; left: max(20px, 4.5vw); }
+}
+
+/* ==========================================================================
+   Motion band — the clips directly under the hero
+   ==========================================================================
+   Full-bleed and edge to edge: this is the first thing below the fold, and it
+   should read as the room moving, not as three cards on a page. On a phone the
+   first clip is tall enough to be unmistakably video; the other two sit beside
+   each other so the band never costs more than about a screen.
+   ========================================================================== */
+
+.v5-motionband {
+  display: grid;
+  gap: 2px;
+  background: var(--v5-ink);
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto;
+}
+
+/* The lead clip takes the full width but stays 3:4 — see the aspect-ratio note
+   below. On a phone that means one tall clip, then two beside it. */
+.v5-motionband .v5-autovideo:first-child {
+  grid-column: 1 / -1;
+}
+
+/* A faint 5AM mark over the band, as an alpha PNG rather than a bare circle.
+   Low opacity and blend-mode so it reads as a watermark on the footage instead
+   of a sticker sitting on top of it. */
+.v5-motionband::after {
+  content: "";
+  position: absolute;
+  right: max(16px, 3vw);
+  bottom: max(16px, 3vw);
+  width: clamp(56px, 12vw, 104px);
+  aspect-ratio: 1;
+  background: url("/brand/5am-logo-alpha.png") center / contain no-repeat;
+  opacity: 0.28;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.v5-motionband { position: relative; }
+
+.v5-motionband .v5-autovideo {
+  gap: 0;
+  position: relative;
+}
+
+/* The clips are vertical phone video. Every tile keeps 3:4 — including the
+   lead, which previously used 5/4 and cropped the top and bottom off a portrait
+   clip to fake a banner. A wide crop of a tall video is not a banner, it is a
+   worse video. */
+.v5-motionband .v5-autovideo__el {
+  aspect-ratio: 3 / 4;
+  height: auto;
+}
+
+/* Caption sits over the footage, so it needs its own ground rather than
+   inheriting the page's — text contrast cannot depend on what the clip is
+   showing at that instant. */
+.v5-motionband .v5-autovideo figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 28px 14px 12px;
+  color: #fff;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  background: linear-gradient(to top, rgba(10, 6, 4, 0.82), transparent);
+}
+
+@media (min-width: 860px) {
+  .v5-motionband {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+  }
+  .v5-motionband .v5-autovideo:first-child { grid-column: auto; }
+  .v5-motionband .v5-autovideo__el,
+  .v5-motionband .v5-autovideo:first-child .v5-autovideo__el {
+    aspect-ratio: 4 / 5;
+  }
 }
 
 /* Per-page gallery block. Shares the mosaic; only the heading treatment differs

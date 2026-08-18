@@ -82,7 +82,10 @@ export function RouteTransition() {
     <>
       <div className="v5-scroll-progress" aria-hidden="true" />
       <div className="v5-route-curtain" aria-hidden="true">
-        <Image src="/brand/5am-logo-white-on-black.png" alt="" width={82} height={82} />
+        {/* Alpha PNG, not the white-on-black asset. The old one was a black
+            square forced into a circle with border-radius, which read as a hard
+            disc sitting on the curtain rather than a mark printed on it. */}
+        <Image src="/brand/5am-logo-alpha.png" alt="" width={96} height={96} />
         <span>Going to</span>
         <strong>{label}</strong>
       </div>

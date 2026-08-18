@@ -31,6 +31,14 @@ type AutoVideoProps = {
   className?: string;
   /** Fills its container instead of sitting in a 3:4 frame. */
   cover?: boolean;
+  /**
+   * Above-the-fold. Adds the `autoPlay` attribute and preloads the file rather
+   * than only its metadata, so the clip is already running when the page paints
+   * instead of waiting for the observer to fire and then for bytes to arrive.
+   * Use it only for clips that are visible on load — on everything else it
+   * would download video nobody has scrolled to.
+   */
+  eager?: boolean;
 };
 
 /**
@@ -56,7 +64,7 @@ type AutoVideoProps = {
  * is caught and left alone, which leaves the poster visible rather than
  * throwing an unhandled rejection into the console.
  */
-export function AutoVideo({ src, poster, label, caption, className, cover }: AutoVideoProps) {
+export function AutoVideo({ src, poster, label, caption, className, cover, eager }: AutoVideoProps) {
   const ref = useRef<HTMLVideoElement | null>(null);
   // subscribeMotion is defined at module scope, so its identity is already
   // stable across renders — wrapping it in useCallback would add a hook without
@@ -72,6 +80,13 @@ export function AutoVideo({ src, poster, label, caption, className, cover }: Aut
       return;
     }
 
+    // An eager clip is on screen at load, so start it immediately rather than
+    // waiting for the observer's first callback. Belt and braces alongside the
+    // autoPlay attribute: autoPlay alone is ignored by some browsers after a
+    // client-side navigation, where the element mounts already in view and no
+    // fresh page load ever happens.
+    if (eager) void node.play().catch(() => {});
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -79,7 +94,14 @@ export function AutoVideo({ src, poster, label, caption, className, cover }: Aut
             // Rejected play() is normal (data saver, background tab, a browser
             // that wants a gesture). The poster stays up; nothing to report.
             void node.play().catch(() => {});
-          } else {
+          } else if (!eager) {
+            // An eager clip is never paused for being off screen. It sits in the
+            // hero, where a visitor scrolling down and back up should find it
+            // still running rather than frozen on a poster — and where the first
+            // observer callback (which reports "not intersecting" for anything
+            // even slightly below the fold) would otherwise immediately undo the
+            // play() above. That race is why the band read as "loaded but
+            // paused" on first build.
             node.pause();
           }
         }
@@ -92,7 +114,7 @@ export function AutoVideo({ src, poster, label, caption, className, cover }: Aut
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [reduced]);
+  }, [reduced, eager]);
 
   return (
     <figure className={`v5-autovideo${cover ? " v5-autovideo--cover" : ""}${className ? ` ${className}` : ""}`}>
@@ -103,7 +125,8 @@ export function AutoVideo({ src, poster, label, caption, className, cover }: Aut
         muted
         loop
         playsInline
-        preload="metadata"
+        autoPlay={eager && !reduced}
+        preload={eager ? "auto" : "metadata"}
         // Not focusable and not a control surface: it is decorative motion, and
         // the caption below carries the meaning.
         tabIndex={-1}

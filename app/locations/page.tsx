@@ -5,6 +5,7 @@ import { BrandFooter } from "@/components/BrandFooter";
 import { MediaGallery } from "@/components/MediaGallery";
 import { LocationExplorer } from "@/components/LocationExplorer";
 import { MotionLayer } from "@/components/MotionLayer";
+import { PageHero } from "@/components/PageHero";
 import { SiteHeader } from "@/components/SiteHeader";
 import { galleries } from "@/lib/media-data";
 
@@ -19,7 +20,17 @@ export default function LocationsPage() {
       <a className="skip-link" href="#main-content">Skip to content</a>
       <MotionLayer />
       <SiteHeader />
-      <section className="v5-locations-hero" id="main-content">
+
+      <PageHero
+        eyebrow="Find us"
+        script="Two rooms, one club"
+        title="Carlos Street. Cunupia."
+        lede="Two shops with different rhythms, and a cart that travels. Hours and directions for both."
+        image="/media/real/cart-front-staff-queue.jpg"
+        imageAlt="The 5AM Club cart with its logo panel lit, staff pouring behind it while customers wait."
+        weight="light"
+      />
+      <section className="v5-locations-hero">
         <div className="v5-locations-hero__copy" data-v5-hero>
           <div className="v5-page-index"><span>02</span> Find 5AM</div>
           <p className="v5-script">Two chapters, one name</p>

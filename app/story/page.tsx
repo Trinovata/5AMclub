@@ -4,6 +4,7 @@ import { BrandFooter } from "@/components/BrandFooter";
 import { MediaGallery } from "@/components/MediaGallery";
 import { ImageZoom } from "@/components/ImageZoom";
 import { MotionLayer } from "@/components/MotionLayer";
+import { PageHero } from "@/components/PageHero";
 import { SiteHeader } from "@/components/SiteHeader";
 import { galleries } from "@/lib/media-data";
 import { guardianUrl, instagramHydrationStyle, instagramUrl } from "@/lib/brand-data";
@@ -19,7 +20,17 @@ export default function StoryPage() {
       <a className="skip-link" href="#main-content">Skip to content</a>
       <MotionLayer />
       <SiteHeader />
-      <section className="v5-story-hero" id="main-content">
+
+      <PageHero
+        eyebrow="The story"
+        script="It started earlier than you think"
+        title="The café was never the first thing."
+        lede="How Kyle Mark built a coffee shop that people treat as somewhere to be, not somewhere to buy from."
+        image="/media/real/baristas-loft-interior.jpg"
+        imageAlt="Two baristas stand back to back and smiling inside the loft, spiral staircase and plants behind them."
+        weight="heavy"
+      />
+      <section className="v5-story-hero">
         <div className="v5-story-hero__copy" data-v5-hero>
           <div className="v5-page-index"><span>04</span> The story</div>
           <p className="v5-script">Built in public</p>

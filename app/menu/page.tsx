@@ -5,6 +5,7 @@ import { BrandFooter } from "@/components/BrandFooter";
 import { MediaGallery } from "@/components/MediaGallery";
 import { MenuExplorer } from "@/components/MenuExplorer";
 import { MotionLayer } from "@/components/MotionLayer";
+import { PageHero } from "@/components/PageHero";
 import { SiteHeader } from "@/components/SiteHeader";
 import { galleries } from "@/lib/media-data";
 
@@ -19,7 +20,18 @@ export default function MenuPage() {
       <a className="skip-link" href="#main-content">Skip to content</a>
       <MotionLayer />
       <SiteHeader />
-      <section className="v5-menu-hero" id="main-content">
+
+      <PageHero
+        eyebrow="The menu"
+        script="Made in front of you"
+        title="Everything, with receipts."
+        lede="Breakfast, the summer line, and the drinks people actually order. Every item here is sourced from the shop's own posts."
+        image="/media/archive/the-pour-night-shift.jpg"
+        imageAlt="A barista pours milk into a coffee during a night shift."
+        weight="light"
+        clip={{ src: "/media/clips/oat-milk-pour-cookie.mp4", poster: "/media/clips/oat-milk-pour-cookie.poster.jpg", label: "A barista pours milk into a coffee during a night shift." }}
+      />
+      <section className="v5-menu-hero">
         <div className="v5-menu-hero__copy" data-v5-hero>
           <div className="v5-page-index"><span>01</span> The menu</div>
           <p className="v5-script">Real food. Real posts.</p>
