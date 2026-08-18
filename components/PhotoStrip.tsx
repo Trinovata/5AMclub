@@ -102,8 +102,8 @@ export function PhotoStrip() {
       </ul>
 
       <p className="v5-strip__foot">
-        All photographs are from the public @5amclubcoffee archive and are shown here for a
-        concept presentation. Media permissions to be confirmed before launch.
+        Every photograph on this site is 5AM&rsquo;s own, from the public @5amclubcoffee
+        archive &mdash; 262 of them, plus 26 short clips. Nothing is stock.
       </p>
     </section>
   );

@@ -25,8 +25,27 @@ import {
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { archiveGroups, clips, galleries, stripShots } from "@/lib/media-data";
+import { team } from "@/lib/team-data";
+import { archiveMoments, locations as brandLocations, menuItems as brandMenuItems } from "@/lib/brand-data";
 
-type View = "overview" | "menu" | "locations" | "events" | "media";
+/**
+ * The dashboard reads from the SAME data files the public pages render from, so
+ * a number here cannot disagree with what the site is actually showing. These
+ * used to be hardcoded — "769 assets indexed" while the site carried 42 — which
+ * is the failure mode an operations view exists to prevent.
+ */
+const publicMedia = {
+  photographs:
+    stripShots.length +
+    Object.values(galleries).reduce((n, g) => n + g.length, 0) +
+    archiveGroups.reduce((n, g) => n + g.shots.length, 0),
+  clips: clips.length,
+  strip: stripShots.length,
+  archive: archiveGroups.reduce((n, g) => n + g.shots.length, 0),
+};
+
+type View = "overview" | "menu" | "locations" | "events" | "media" | "team";
 
 type MenuItem = {
   id: number;
@@ -45,6 +64,7 @@ const navItems: Array<{
   { id: "menu", label: "Menu", icon: Coffee },
   { id: "locations", label: "Locations", icon: MapPinned },
   { id: "events", label: "Events", icon: CalendarDays },
+  { id: "team", label: "Team", icon: Users },
   { id: "media", label: "Media", icon: ImageIcon },
 ];
 
@@ -219,6 +239,7 @@ export function AdminDashboard() {
           )}
           {view === "locations" && <LocationsView onToast={notify} />}
           {view === "events" && <EventsView onToast={notify} />}
+          {view === "team" && <TeamView onToast={notify} />}
           {view === "media" && <MediaView onToast={notify} />}
         </main>
       </div>
@@ -276,23 +297,33 @@ function Overview({ onNavigate, onToast }: { onNavigate: (view: View) => void; o
 
       <section className="metric-grid" aria-label="Demo business signals">
         <article className="metric-card metric-card--dark">
-          <div><span>Official media</span><MoreHorizontal aria-hidden="true" size={19} /></div>
-          <strong>769</strong>
-          <p>assets indexed from @5amclubcoffee</p>
+          <div><span>Photographs live</span><ImageIcon aria-hidden="true" size={19} /></div>
+          <strong>{publicMedia.photographs}</strong>
+          <p>on the public pages, curated from 447 archive frames</p>
+        </article>
+        <article className="metric-card">
+          <div><span>Silent clips</span><MoreHorizontal aria-hidden="true" size={19} /></div>
+          <strong>{publicMedia.clips}</strong>
+          <p>autoplaying, muted, no audio track</p>
         </article>
         <article className="metric-card">
           <div><span>Menu records</span><Coffee aria-hidden="true" size={19} /></div>
-          <strong>8</strong>
+          <strong>{brandMenuItems.length}</strong>
           <p>source-backed records imported</p>
         </article>
         <article className="metric-card">
-          <div><span>Published branches</span><MapPinned aria-hidden="true" size={19} /></div>
-          <strong>2</strong>
+          <div><span>Branches</span><MapPinned aria-hidden="true" size={19} /></div>
+          <strong>{brandLocations.length}</strong>
           <p>hours transcribed from official media</p>
+        </article>
+        <article className="metric-card">
+          <div><span>Team named</span><Users aria-hidden="true" size={19} /></div>
+          <strong>{team.length}</strong>
+          <p>from staff award certificates</p>
         </article>
         <article className="metric-card metric-card--accent">
           <div><span>Archive moments</span><CalendarDays aria-hidden="true" size={19} /></div>
-          <strong>4</strong>
+          <strong>{archiveMoments.length}</strong>
           <p>music, games, and pop-ups staged</p>
         </article>
       </section>
@@ -494,19 +525,73 @@ function EventsView({ onToast }: { onToast: (message: string) => void }) {
   );
 }
 
+/**
+ * Team — the same roster the /story page renders.
+ *
+ * The consent column is the point of having this view at all: every name on the
+ * public page came off a certificate in a public post, which is not the same as
+ * someone agreeing to appear on the business's website. This is where that gets
+ * tracked before launch, one person at a time.
+ */
+function TeamView({ onToast }: { onToast: (message: string) => void }) {
+  return (
+    <>
+      <PageIntro
+        eyebrow="Team"
+        title="Eleven names, all sourced."
+        copy="Every name and award below is read off a staff certificate in one of the shop's own public posts — nothing here is invented. Each still needs the person's sign-off before the site goes live."
+        action="Export roster"
+        onAction={() => onToast("Roster export connects after the CMS is chosen")}
+      />
+      <div className="media-admin-grid">
+        {team.map((member) => (
+          <article className="admin-panel media-tile" key={member.name}>
+            <button
+              className="media-tile__image"
+              type="button"
+              onClick={() => onToast(`${member.name} — consent not yet recorded`)}
+              aria-label={`Review ${member.name}`}
+            >
+              <Image src={member.image} alt="" fill sizes="(max-width: 800px) 50vw, 22vw" />
+              {/* status--review, not a new class: the three status styles here
+                  are an existing set, and "awaiting a decision" is exactly what
+                  review already means. */}
+              <span className="status status--review">
+                <CircleHelp aria-hidden="true" size={13} /> Consent pending
+              </span>
+            </button>
+            <div className="media-tile__meta">
+              <strong>{member.name}</strong>
+              <span>{member.award}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </>
+  );
+}
+
 function MediaView({ onToast }: { onToast: (message: string) => void }) {
-  const assets = [
-    { src: "/media/real/chicken-waffles-coffee.jpg", title: "Chicken & Waffles", published: "14 Aug 2026", ratio: "media-tile--wide" },
-    { src: "/media/real/kyle-community.jpg", title: "Kyle + community", published: "13 Jul 2026", ratio: "" },
-    { src: "/media/real/jazz-vocalists.jpg", title: "Jazz archive", published: "15 May 2026", ratio: "media-tile--wide" },
-    { src: "/media/real/summer-lineup.jpg", title: "Summer lineup", published: "25 Jun 2026", ratio: "" },
-  ];
+  // Drawn from the same arrays the public gallery renders, so the library shows
+  // what is actually on the site. It used to be four hardcoded filenames, which
+  // meant the "media library" and the website could drift apart indefinitely.
+  const assets = useMemo(() => {
+    const fromGroups = archiveGroups.flatMap((group) =>
+      group.shots.slice(0, 6).map((shot) => ({
+        src: shot.image,
+        title: shot.caption ?? group.title,
+        published: group.title,
+        ratio: shot.span === "feature" || shot.span === "wide" ? "media-tile--wide" : "",
+      })),
+    );
+    return fromGroups.slice(0, 24);
+  }, []);
   return (
     <>
       <PageIntro
         eyebrow="Media library"
         title="Know what can ship."
-        copy="The prototype now uses supplied public brand media, indexed by account, post, timestamp, hash, format, and dimensions."
+        copy={`${publicMedia.photographs} photographs and ${publicMedia.clips} silent clips are live across the site — ${publicMedia.strip} in the home rail, ${publicMedia.archive} in the archive, the rest on the menu, locations, club and story pages. Everything below is on a public page right now.`}
         action="Upload asset"
         onAction={() => onToast("Production uploads connect through Cloudinary after approval")}
       />

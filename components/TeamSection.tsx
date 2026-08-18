@@ -56,8 +56,8 @@ export function TeamSection() {
       </ul>
 
       <p className="v5-team__foot">
-        Names and awards are taken from certificates in the shop&rsquo;s own public posts.
-        To be confirmed with each person before launch.
+        Names and awards are read from certificates in 5AM&rsquo;s own public posts &mdash;
+        nothing here is invented. Worth a word with each person before this goes live.
       </p>
     </section>
   );
