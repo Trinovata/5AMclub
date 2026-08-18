@@ -1959,3 +1959,182 @@ a:focus-visible > .v5-media-destination,
   .v5-scroll-progress,
   .v5-route-curtain { display: none; }
 }
+
+/* ==========================================================================
+   In the room — the swipeable photo strip
+   ==========================================================================
+   Portrait frames in a horizontal scroll-snap rail. Fifteen 3:4 photographs
+   stacked vertically would add ~7000px to a phone page; as a rail they cost one
+   screen-height and use the gesture a phone user already has in hand.
+
+   No JS: scroll-snap is CSS, so with scripting off this is still a scrollable
+   list of images.
+   ========================================================================== */
+
+.v5-strip {
+  background: var(--v5-cream);
+  color: var(--v5-ink);
+}
+
+/* The header is sticky, so an anchor jump (/story#community, /club, the skip
+   link) lands with the target's first line hidden underneath it. Reserving the
+   header's height as scroll margin puts the heading back in view. */
+.v5-section,
+.v5-strip,
+[id] {
+  scroll-margin-top: clamp(76px, 12vw, 104px);
+}
+
+.v5-strip__head {
+  display: grid;
+  gap: 18px;
+  margin-bottom: clamp(26px, 4vw, 44px);
+}
+
+.v5-strip__heading h2 {
+  /* Floor deliberately low: this file's other headings use a 4rem minimum,
+     which renders ~66px on a 390px screen because the vw term never wins. The
+     viewport term is what should drive small screens, so the floor steps aside. */
+  max-width: 900px;
+  margin: 0;
+  font-family: var(--v5-display);
+  font-size: clamp(2.5rem, 9vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.v5-strip__lede {
+  max-width: 52ch;
+  margin: 14px 0 0;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.5;
+  color: rgba(21, 13, 9, 0.72);
+}
+
+.v5-strip__rail {
+  display: flex;
+  gap: clamp(12px, 2vw, 22px);
+  margin: 0;
+  padding: 4px 0 22px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* Cards bleed to the screen edge so the rail reads as continuous, while the
+     first still aligns with the section text above it. */
+  scroll-padding-inline: max(22px, 4.5vw);
+  margin-inline: calc(-1 * max(22px, 4.5vw));
+  padding-inline: max(22px, 4.5vw);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.v5-strip__rail:focus-visible {
+  outline: 2px solid var(--v5-ink);
+  outline-offset: 4px;
+}
+
+.v5-strip__item {
+  flex: 0 0 auto;
+  /* ~1.3 cards visible on a phone: the peek is what tells a thumb to swipe. */
+  width: min(78vw, 300px);
+  scroll-snap-align: start;
+}
+
+.v5-strip__item--feature {
+  width: min(86vw, 380px);
+}
+
+.v5-strip__item figure {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.v5-strip__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(21, 13, 9, 0.06);
+}
+
+.v5-strip__frame img {
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.v5-strip__item figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--v5-body);
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  /* 0.78 alpha on cream measures ~7:1 — comfortably past the 4.5:1 floor. */
+  color: rgba(21, 13, 9, 0.78);
+}
+
+.v5-strip__item figcaption small {
+  font-variant-numeric: tabular-nums;
+  /* 0.55 alpha measured 4.08:1 on this cream — under the 4.5 floor. 0.68
+     measures ~5.3:1. Checked with the alpha composited over the background,
+     not against the raw rgb, which reads a misleading 16:1. */
+  color: rgba(21, 13, 9, 0.68);
+}
+
+.v5-strip__foot {
+  margin: 6px 0 0;
+  max-width: 60ch;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(21, 13, 9, 0.62);
+}
+
+/* Hover zoom is a pointer affordance. On touch it only ever fires as a sticky
+   state after a tap, so it is scoped to devices that actually hover. */
+@media (hover: hover) and (pointer: fine) {
+  .v5-strip__item:hover .v5-strip__frame img {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5-strip__frame img { transition: none; }
+  .v5-strip__rail { scroll-behavior: auto; }
+}
+
+/* ==========================================================================
+   Mobile pass
+   ==========================================================================
+   Measured on a 390x844 viewport: headings rendered at 62-66px because their
+   clamp() FLOORS (4rem and up) sit above whatever 7vw resolves to at that
+   width, so the viewport term never engaged. With 92px section padding on top,
+   the homepage ran 10,884px — about thirteen screens.
+
+   Lowering the floors lets the vw term drive small screens. The desktop maxima
+   are untouched, so the editorial scale is unchanged where there is room for it.
+   ========================================================================== */
+
+@media (max-width: 700px) {
+  .v5-section {
+    padding: clamp(56px, 12vw, 92px) max(20px, 4.5vw);
+  }
+
+  .v5-proof__heading h2,
+  .v5-home-locations__title h2,
+  .v5-club-tease h2,
+  .v5-story-tease h2,
+  .v5-system-section h2,
+  .v5-home-menu__head h2 {
+    font-size: clamp(2.5rem, 11vw, 4rem);
+    line-height: 0.92;
+  }
+
+  /* 100vh includes the mobile URL bar, so a viewport-height block is taller
+     than the visible screen and shifts as the bar hides. svh is the small
+     (bar-visible) height, which is the one that never overflows. */
+  .v5-site {
+    min-height: 100svh;
+  }
+}

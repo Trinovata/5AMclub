@@ -5,6 +5,7 @@ import { BrandFooter } from "@/components/BrandFooter";
 import { BrandSystemMap } from "@/components/BrandSystemMap";
 import { HeroStage } from "@/components/HeroStage";
 import { MotionLayer } from "@/components/MotionLayer";
+import { PhotoStrip } from "@/components/PhotoStrip";
 import { SiteHeader } from "@/components/SiteHeader";
 import { guardianUrl, locations, menuItems } from "@/lib/brand-data";
 
@@ -123,8 +124,10 @@ export default function Home() {
         </div>
       </section>
 
+      <PhotoStrip />
+
       <section className="v5-home-locations v5-section" aria-labelledby="home-locations-title">
-        <div className="v5-section-label" data-v5-reveal><span>03</span> Pick your chapter</div>
+        <div className="v5-section-label" data-v5-reveal><span>04</span> Pick your chapter</div>
         <div className="v5-home-locations__title" data-v5-reveal>
           <p className="v5-script">Cunupia to Carlos Street</p>
           <h2 id="home-locations-title">Same name. Different rhythm.</h2>
@@ -144,7 +147,7 @@ export default function Home() {
 
       <section className="v5-club-tease v5-section" aria-labelledby="club-tease-title">
         <div className="v5-club-tease__copy" data-v5-reveal>
-          <div className="v5-section-label v5-section-label--light"><span>04</span> The Club</div>
+          <div className="v5-section-label v5-section-label--light"><span>05</span> The Club</div>
           <p className="v5-script">Coffee is only the opening act</p>
           <h2 id="club-tease-title">This place sounds different after five.</h2>
           <p>Live music. Game nights. Pop-ups. A record of what happened, and a reason to catch what happens next.</p>
@@ -169,7 +172,7 @@ export default function Home() {
           <span className="v5-media-destination">Read the story <ArrowUpRight aria-hidden="true" size={16} /></span>
         </Link>
         <div className="v5-story-tease__copy" data-v5-reveal>
-          <div className="v5-section-label"><span>05</span> Kyle’s story</div>
+          <div className="v5-section-label"><span>06</span> Kyle’s story</div>
           <p className="v5-script">An audience became a place</p>
           <h2 id="story-tease-title">The café was never the first chapter.</h2>
           <p>
@@ -182,7 +185,7 @@ export default function Home() {
 
       <section className="v5-system-section v5-section" aria-labelledby="system-map-title">
         <div className="v5-system-section__head" data-v5-reveal>
-          <div className="v5-section-label"><span>06</span> The whole system</div>
+          <div className="v5-section-label"><span>07</span> The whole system</div>
           <div><p className="v5-script">From attention to return visit</p><h2 id="system-map-title">Every chapter should lead somewhere.</h2></div>
           <p>Hover, focus, or tap a node to see how the public brand and the operating layer connect. Every node is also a real route.</p>
         </div>
