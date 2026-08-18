@@ -6,6 +6,7 @@ import { ImageZoom } from "@/components/ImageZoom";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageHero } from "@/components/PageHero";
 import { SiteHeader } from "@/components/SiteHeader";
+import { TeamSection } from "@/components/TeamSection";
 import { galleries } from "@/lib/media-data";
 import { guardianUrl, instagramHydrationStyle, instagramUrl } from "@/lib/brand-data";
 
@@ -75,6 +76,8 @@ export default function StoryPage() {
           <a href={instagramUrl} target="_blank" rel="noreferrer" suppressHydrationWarning style={instagramHydrationStyle}>Official 5AM Instagram archive <ArrowUpRight aria-hidden="true" size={17} /></a>
         </div>
       </section>
+
+      <TeamSection />
 
       <section className="v5-pagegallery v5-section" aria-labelledby="story-gallery-title">
         <div className="v5-pagegallery__head">

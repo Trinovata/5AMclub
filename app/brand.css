@@ -2469,6 +2469,126 @@ a:focus-visible > .v5-media-destination,
 }
 
 /* ==========================================================================
+   Meet the team
+   ==========================================================================
+   Two across on a phone rather than the gallery's three: these are faces, and a
+   face at a third of a phone screen is a thumbnail, not a person.
+   ========================================================================== */
+
+.v5-team {
+  background: var(--v5-cream);
+  color: var(--v5-ink);
+}
+
+.v5-team__head {
+  margin-bottom: clamp(24px, 4vw, 48px);
+}
+
+.v5-team__head h2 {
+  margin: 6px 0 0;
+  font-family: var(--v5-display);
+  font-size: clamp(2.6rem, 11vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.v5-team__lede {
+  max-width: 54ch;
+  margin: 16px 0 0;
+  font-size: clamp(0.98rem, 1.35vw, 1.12rem);
+  line-height: 1.55;
+  color: rgba(21, 13, 9, 0.76);
+}
+
+.v5-team__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(14px, 2.4vw, 30px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v5-team__card figure {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.v5-team__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(21, 13, 9, 0.06);
+}
+
+.v5-team__frame img {
+  object-fit: cover;
+  /* The certificate is held at chest height and the face is above it, so a
+     centre crop cuts one or the other. Biasing upward keeps the face. */
+  object-position: 50% 32%;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .v5-team__card:hover .v5-team__frame img { transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5-team__frame img { transition: none; }
+}
+
+.v5-team__card figcaption {
+  display: grid;
+  gap: 4px;
+}
+
+/* The award leads. It is the sourced part, and it says more about the place
+   than a job title would. */
+.v5-team__award {
+  font-family: var(--v5-body);
+  font-size: 0.68rem;
+  font-weight: 780;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a8431c;
+}
+
+.v5-team__name {
+  font-family: var(--v5-display);
+  font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.v5-team__note {
+  font-family: var(--v5-body);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  /* 0.68 alpha on cream measures ~5.3:1, clear of the 4.5 floor. */
+  color: rgba(21, 13, 9, 0.68);
+}
+
+.v5-team__foot {
+  max-width: 60ch;
+  margin: clamp(22px, 3.5vw, 40px) 0 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(21, 13, 9, 0.62);
+}
+
+@media (min-width: 700px) {
+  .v5-team__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1100px) {
+  .v5-team__grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ==========================================================================
    The pour — first-visit loading screen
    ==========================================================================
    Black field, wordmark knocked out of it, coffee rising inside the letters.
